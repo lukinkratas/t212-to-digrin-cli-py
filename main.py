@@ -15,8 +15,8 @@ from t212 import T212ApiClient
 
 
 def get_input_dt() -> str:
-    today_dt = datetime.date.today()
-    previous_month_dt = today_dt - relativedelta(months=1)
+    current_dt = datetime.date.today()
+    previous_month_dt = current_dt - relativedelta(months=1)
     previous_month_dt_str = previous_month_dt.strftime('%Y-%m')
 
     print('Reporting Year Month in "YYYY-mm" format:')
