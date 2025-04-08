@@ -53,11 +53,18 @@ def encode_df(df: pd.DataFrame, **kwargs) -> bytes:
 
 @track_args
 def transform(report_df: pd.DataFrame) -> pd.DataFrame:
+    # Filter only buys and sells
+    allowed_actions: list[str] = ['Market buy', 'Market sell']
+    report_df = report_df[report_df['Action'].isin(allowed_actions)]
+
+    # Filter out blacklisted tickers
     ticker_blacklist: list[str] = [
         'VNTRF',  # due to stock split
         'BRK.A',  # not available in digrin
     ]
+    report_df = report_df[~report_df['Ticker'].isin(ticker_blacklist)]
 
+    # Apply the mapping to the ticker column
     ticker_map: dict[str, str] = {
         'VWCE': 'VWCE.DE',
         'VUAA': 'VUAA.DE',
@@ -72,14 +79,6 @@ def transform(report_df: pd.DataFrame) -> pd.DataFrame:
         'IUHC': 'IUHC.L',
         'NDIA': 'NDIA.L',
     }
-
-    # Filter only buys and sells
-    report_df = report_df[report_df['Action'].isin(['Market buy', 'Market sell'])]
-
-    # Filter out blacklisted tickers
-    report_df = report_df[~report_df['Ticker'].isin(ticker_blacklist)]
-
-    # Apply the mapping to the ticker column
     report_df['Ticker'] = report_df['Ticker'].replace(ticker_map)
 
     # convert dtypes
