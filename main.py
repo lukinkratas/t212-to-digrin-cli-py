@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, date
 import os
 import time
 from typing import Any
@@ -8,14 +8,15 @@ import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
+from t212_utils import T212ApiClient
 from aws_utils import s3_put_object
 from decorators import track_args
 from df_utils import decode_df, encode_df
-from t212 import T212ApiClient
+from time_utils import get_first_day_of_month, get_first_day_of_next_month
 
 
 def get_input_dt() -> str:
-    current_dt = datetime.date.today()
+    current_dt = date.today()
     previous_month_dt = current_dt - relativedelta(months=1)
     previous_month_dt_str = previous_month_dt.strftime('%Y-%m')
 
@@ -27,15 +28,6 @@ def get_input_dt() -> str:
         input_dt_str = previous_month_dt_str
 
     return input_dt_str
-
-
-def get_first_day_of_month(dt: datetime.datetime) -> datetime.datetime:
-    return dt.replace(day=1)
-
-
-def get_first_day_of_next_month(dt: datetime.datetime) -> datetime.datetime:
-    next_month_dt = dt + relativedelta(months=1)  # works even for Jan and Dec
-    return next_month_dt.replace(day=1)
 
 
 @track_args
@@ -78,10 +70,10 @@ def main():
     bucket_name: str = os.getenv('BUCKET_NAME')
 
     input_dt_str: str = get_input_dt()  # used later in the naming of csv
-    input_dt: datetime.datetime = datetime.datetime.strptime(input_dt_str, '%Y-%m')
+    input_dt: datetime = datetime.strptime(input_dt_str, '%Y-%m')
 
-    from_dt: datetime.datetime = get_first_day_of_month(input_dt)
-    to_dt: datetime.datetime = get_first_day_of_next_month(input_dt)
+    from_dt: datetime = get_first_day_of_month(input_dt)
+    to_dt: datetime = get_first_day_of_next_month(input_dt)
 
     t212_client = T212ApiClient(api_key=os.getenv('T212_API_KEY'))
 
