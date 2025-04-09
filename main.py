@@ -1,7 +1,6 @@
 import datetime
 import os
 import time
-from io import BytesIO, StringIO
 from typing import Any
 
 import pandas as pd
@@ -11,6 +10,7 @@ from dotenv import load_dotenv
 
 from aws_utils import s3_put_object
 from decorators import track_args
+from df_utils import decode_df, encode_df
 from t212 import T212ApiClient
 
 
@@ -36,19 +36,6 @@ def get_first_day_of_month(dt: datetime.datetime) -> datetime.datetime:
 def get_first_day_of_next_month(dt: datetime.datetime) -> datetime.datetime:
     next_month_dt = dt + relativedelta(months=1)  # works even for Jan and Dec
     return next_month_dt.replace(day=1)
-
-
-@track_args
-def decode_df(encoded_df: bytes, **kwargs) -> pd.DataFrame:
-    return pd.read_csv(StringIO(encoded_df.decode('utf-8')), **kwargs)
-
-
-@track_args
-def encode_df(df: pd.DataFrame, **kwargs) -> bytes:
-    bytes = BytesIO()
-    df.to_csv(bytes, **kwargs)
-    bytes.seek(0)
-    return bytes.getvalue()
 
 
 @track_args
