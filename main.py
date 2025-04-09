@@ -8,13 +8,14 @@ import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
-from aws_utils import s3_put_object
-from decorators import track_args
-from df_utils import decode_df, encode_df
-from t212_utils import T212ApiClient
-from time_utils import get_first_day_of_month, get_first_day_of_next_month
+from custom_utils import aws as aws_utils
+from custom_utils import decorators
+from custom_utils import df as df_utils
+from custom_utils import dt as dt_utils
+from custom_utils import t212 as t212_utils
 
 
+@decorators.track_args
 def get_input_dt() -> str:
     current_dt = date.today()
     previous_month_dt = current_dt - relativedelta(months=1)
@@ -30,7 +31,7 @@ def get_input_dt() -> str:
     return input_dt_str
 
 
-@track_args
+@decorators.track_args
 def transform(report_df: pd.DataFrame) -> pd.DataFrame:
     # Filter only buys and sells
     allowed_actions: list[str] = ['Market buy', 'Market sell']
@@ -72,10 +73,10 @@ def main():
     input_dt_str: str = get_input_dt()  # used later in the naming of csv
     input_dt: datetime = datetime.strptime(input_dt_str, '%Y-%m')
 
-    from_dt: datetime = get_first_day_of_month(input_dt)
-    to_dt: datetime = get_first_day_of_next_month(input_dt)
+    from_dt: datetime = dt_utils.get_first_day_of_month(input_dt)
+    to_dt: datetime = dt_utils.get_first_day_of_next_month(input_dt)
 
-    t212_client = T212ApiClient(api_key=os.getenv('T212_API_KEY'))
+    t212_client = t212_utils.ApiClient(api_key=os.getenv('T212_API_KEY'))
 
     while True:
         report_id: int = t212_client.create_report(from_dt, to_dt)
@@ -117,15 +118,19 @@ def main():
 
     t212_df_encoded: bytes = response.content
     filename: str = f'{input_dt_str}.csv'
-    s3_put_object(bytes=t212_df_encoded, bucket=bucket_name, key=f't212/{filename}')
+    aws_utils.s3_put_object(
+        bytes=t212_df_encoded, bucket=bucket_name, key=f't212/{filename}'
+    )
 
-    t212_df: pd.DataFrame = decode_df(t212_df_encoded)
+    t212_df: pd.DataFrame = df_utils.decode_df(t212_df_encoded)
 
     digrin_df: pd.DataFrame = transform(t212_df)
     digrin_df.to_csv(filename, index=False)
 
-    digrin_df_encoded: bytes = encode_df(digrin_df, index=False)
-    s3_put_object(digrin_df_encoded, bucket=bucket_name, key=f'digrin/{filename}')
+    digrin_df_encoded: bytes = df_utils.encode_df(digrin_df, index=False)
+    aws_utils.s3_put_object(
+        digrin_df_encoded, bucket=bucket_name, key=f'digrin/{filename}'
+    )
 
 
 if __name__ == '__main__':

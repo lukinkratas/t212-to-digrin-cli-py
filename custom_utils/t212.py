@@ -3,14 +3,11 @@ from typing import Any
 
 import requests
 
-from decorators import track_args
 
-
-class T212ApiClient:
+class ApiClient:
     def __init__(self, api_key: str):
         self.api_key = api_key
 
-    @track_args
     def create_report(
         self, from_dt: str | datetime.datetime, to_dt: str | datetime.datetime
     ) -> int | None:
@@ -58,7 +55,6 @@ class T212ApiClient:
 
         return response.json().get('reportId')
 
-    @track_args
     def fetch_reports(self) -> list[dict[str, Any]] | None:
         """
         Fetches list of reports.
