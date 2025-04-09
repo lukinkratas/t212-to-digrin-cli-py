@@ -26,3 +26,5 @@ uv run main.py
 - [ ] investigate option of asyncio
 
 - [ ] yield fetchReports ?
+
+- [ ] add Ci/CD via github actions
