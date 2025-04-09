@@ -28,3 +28,5 @@ uv run main.py
 - [ ] yield fetchReports ?
 
 - [ ] add Ci/CD via github actions
+
+- [ ] manage secrets via aws secrets
