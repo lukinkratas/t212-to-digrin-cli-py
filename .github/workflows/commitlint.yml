@@ -1,16 +1,10 @@
 name: Format and Lint
 
-on:
-  push:
-    branches: main
+on: [push]
 
 jobs:
   commitlint:
     runs-on: ubuntu-latest
     steps:
-      - name: Format
-        uses: astral-sh/ruff-action@v3
-        run: ruff format
-      - name: Lint
-        uses: astral-sh/ruff-action@v3
-        run: ruff check
+      - uses: astral-sh/ruff-action@v3
+      - run: ruff format
