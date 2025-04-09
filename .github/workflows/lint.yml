@@ -8,11 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - name: Format
-        run: uv tool run ruff format
-      - name: Lint
-        run: uv tool run ruff check --fix
-      - name: Autocommit
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - run: uv tool run ruff format
+      - run: uv tool run ruff check --fix
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'Automatically generated from Github Actions: Format and Lint'
