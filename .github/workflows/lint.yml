@@ -1,0 +1,15 @@
+name: Format, Lint and Autocommit
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv tool run ruff format
+      - run: uv tool run ruff check --fix
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'Automatically generated from Github Actions: Format and Lint'
