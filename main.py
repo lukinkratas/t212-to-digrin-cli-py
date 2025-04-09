@@ -8,11 +8,7 @@ import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
-from custom_utils import aws as aws_utils
-from custom_utils import decorators
-from custom_utils import df as df_utils
-from custom_utils import dt as dt_utils
-from custom_utils import t212 as t212_utils
+from custom_utils import aws_utils, csv_utils, datetime_utils, decorators, t212_utils
 
 
 @decorators.track_args
@@ -73,8 +69,8 @@ def main():
     input_dt_str: str = get_input_dt()  # used later in the naming of csv
     input_dt: datetime = datetime.strptime(input_dt_str, '%Y-%m')
 
-    from_dt: datetime = dt_utils.get_first_day_of_month(input_dt)
-    to_dt: datetime = dt_utils.get_first_day_of_next_month(input_dt)
+    from_dt: datetime = datetime_utils.get_first_day_of_month(input_dt)
+    to_dt: datetime = datetime_utils.get_first_day_of_next_month(input_dt)
 
     t212_client = t212_utils.ApiClient(api_key=os.getenv('T212_API_KEY'))
 
@@ -122,12 +118,13 @@ def main():
         bytes=t212_df_encoded, bucket=bucket_name, key=f't212/{filename}'
     )
 
-    t212_df: pd.DataFrame = df_utils.decode_df(t212_df_encoded)
+    t212_df: pd.DataFrame = csv_utils.decode_to_df(t212_df_encoded)
+    t212_df.to_csv(f't212_{filename}', index=False)
 
     digrin_df: pd.DataFrame = transform(t212_df)
     digrin_df.to_csv(filename, index=False)
 
-    digrin_df_encoded: bytes = df_utils.encode_df(digrin_df, index=False)
+    digrin_df_encoded: bytes = csv_utils.encode_df(digrin_df)
     aws_utils.s3_put_object(
         digrin_df_encoded, bucket=bucket_name, key=f'digrin/{filename}'
     )
