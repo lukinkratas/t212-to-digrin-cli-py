@@ -12,9 +12,6 @@ dependencies = [
     "requests>=2.32.3",
 ]
 
-[tool.mypy]
-struct = true
-
 [tool.ruff]
 line-length = 88
 indent-width = 4
