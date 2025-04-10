@@ -22,3 +22,8 @@ extend-select = ["E501", "N", "R", "I", "C901", "PD", "NPY"]
 [tool.ruff.format]
 quote-style = "single"
 indent-style = "space"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.4",
+]
