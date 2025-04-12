@@ -22,6 +22,10 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 ```
 
 ```bash
+    uv sync
+```
+
+```bash
     uv run main.py
 ```
 
