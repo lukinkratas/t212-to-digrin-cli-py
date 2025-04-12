@@ -89,7 +89,7 @@ def main():
     while True:
         # reports: list of dicts with keys:
         #   reportId, timeFrom, timeTo, dataIncluded, status, downloadLink
-        reports: list[dict[str, Any]] = t212_client.fetch_reports()
+        reports: list[dict[str, Any]] = t212_client.list_reports()
 
         # too many calls -> fetch_reports returns None
         if not reports:

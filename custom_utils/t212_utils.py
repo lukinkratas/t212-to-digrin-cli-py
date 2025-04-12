@@ -55,7 +55,7 @@ class ApiClient:
 
         return response.json().get('reportId')
 
-    def fetch_reports(self) -> list[dict[str, Any]] | None:
+    def list_reports(self) -> list[dict[str, Any]] | None:
         """
         Fetches list of reports.
 
