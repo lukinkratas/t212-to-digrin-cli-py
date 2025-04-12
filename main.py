@@ -9,7 +9,7 @@ import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
-from custom_utils import csv_utils, datetime_utils, decorators, email_utils, t212_utils
+from custom_utils import csv_utils, datetime_utils, decorators, email_utils, t212_utils, aws_utils
 
 
 def get_input_dt() -> str:
@@ -67,8 +67,8 @@ def main():
     bucket_name: str = os.getenv('BUCKET_NAME')
     t212_client = t212_utils.ApiClient(api_key=os.getenv('T212_API_KEY'))
     seznam_client = email_utils.TLSClient(
-        username=os.getenv('SEZNAM_EMAIL'),
-        password=os.getenv('SEZNAM_PASSWORD'),
+        username=os.getenv('EMAIL'),
+        password=os.getenv('PASSWORD'),
         host='smtp.seznam.cz',
     )
     s3_client = boto3.client('s3')
@@ -119,7 +119,7 @@ def main():
 
     t212_df_encoded: bytes = response.content
     filename: str = f'{input_dt_str}.csv'
-    s3_client.put_object(
+    aws_utils.s3_put_object(
         Body=t212_df_encoded, Bucket=bucket_name, Key=f't212/{filename}'
     )
 
@@ -130,11 +130,11 @@ def main():
     digrin_df.to_csv(filename, index=False)
 
     digrin_df_encoded: bytes = csv_utils.encode_df(digrin_df)
-    s3_client.put_object(
+    aws_utils.s3_put_object(
         Body=digrin_df_encoded, Bucket=bucket_name, Key=f'digrin/{filename}'
     )
     seznam_client.send_email(
-        receiver=os.getenv('SEZNAM_EMAIL'),
+        receiver=os.getenv('EMAIL'),
         subject='T212 to Digrin',
         body='<html><body><p><br>Your Report is ready<br></p></body></html>',
         attachment=digrin_df_encoded,
