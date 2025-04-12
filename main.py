@@ -3,15 +3,15 @@ import time
 from datetime import date, datetime
 from typing import Any
 
+import boto3
 import pandas as pd
 import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
-from custom_utils import aws_utils, csv_utils, datetime_utils, decorators, t212_utils
+from custom_utils import csv_utils, datetime_utils, decorators, email_utils, t212_utils
 
 
-@decorators.track_args
 def get_input_dt() -> str:
     current_dt = date.today()
     previous_month_dt = current_dt - relativedelta(months=1)
@@ -65,14 +65,19 @@ def main():
     load_dotenv(override=True)
 
     bucket_name: str = os.getenv('BUCKET_NAME')
+    t212_client = t212_utils.ApiClient(api_key=os.getenv('T212_API_KEY'))
+    seznam_client = email_utils.TLSClient(
+        username=os.getenv('SEZNAM_EMAIL'),
+        password=os.getenv('SEZNAM_PASSWORD'),
+        host='smtp.seznam.cz',
+    )
+    s3_client = boto3.client('s3')
 
     input_dt_str: str = get_input_dt()  # used later in the naming of csv
     input_dt: datetime = datetime.strptime(input_dt_str, '%Y-%m')
 
     from_dt: datetime = datetime_utils.get_first_day_of_month(input_dt)
     to_dt: datetime = datetime_utils.get_first_day_of_next_month(input_dt)
-
-    t212_client = t212_utils.ApiClient(api_key=os.getenv('T212_API_KEY'))
 
     while True:
         report_id: int = t212_client.create_report(from_dt, to_dt)
@@ -114,8 +119,8 @@ def main():
 
     t212_df_encoded: bytes = response.content
     filename: str = f'{input_dt_str}.csv'
-    aws_utils.s3_put_object(
-        bytes=t212_df_encoded, bucket=bucket_name, key=f't212/{filename}'
+    s3_client.put_object(
+        Body=t212_df_encoded, Bucket=bucket_name, Key=f't212/{filename}'
     )
 
     t212_df: pd.DataFrame = csv_utils.decode_to_df(t212_df_encoded)
@@ -125,8 +130,15 @@ def main():
     digrin_df.to_csv(filename, index=False)
 
     digrin_df_encoded: bytes = csv_utils.encode_df(digrin_df)
-    aws_utils.s3_put_object(
-        digrin_df_encoded, bucket=bucket_name, key=f'digrin/{filename}'
+    s3_client.put_object(
+        Body=digrin_df_encoded, Bucket=bucket_name, Key=f'digrin/{filename}'
+    )
+    seznam_client.send_email(
+        receiver=os.getenv('SEZNAM_EMAIL'),
+        subject='T212 to Digrin',
+        body='<html><body><p><br>Your Report is ready<br></p></body></html>',
+        attachment=digrin_df_encoded,
+        filename=filename,
     )
 
 

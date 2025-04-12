@@ -27,20 +27,24 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 # TODO
 
-- [ ] archive reports in parquet ?
+- [ ] investigate option of asyncio + measure perf improvement
+
+- [ ] manage secrets via gcp secrets
 
 - [ ] add type hints for created variables in main()
 
 - [ ] add logging
 
+- [ ] archive reports in parquet ?
+
 - [ ] add tests
 
-- [ ] investigate option of asyncio
+- [ ] schedule via Airflow / Github Actions
 
 - [x] add Ci/CD via github actions
 
-- [ ] manage secrets via gcp secrets
+- [x] add send mail instead of storing locally
 
-- [ ] investigate option of asyncio
+- [ ] send aws s3 temporary link and not email attachment
 
-- [ ] add send mail instead of storing locally
+- [ ] add gmail option
