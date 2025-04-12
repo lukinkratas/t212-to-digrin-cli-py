@@ -14,15 +14,15 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 ## Setup
 
 ```bash
-echo "T212_API_KEY=xxx" > .env
-echo "AWS_ACCESS_KEY_ID=xxx" >> .env # or use aws configure
-echo "AWS_SECRET_ACCESS_KEY=xxx" >> .env # or use aws configure
-echo "AWS_REGION=xxx" >> .env # or use aws configure
-echo "BUCKET_NAME=xxx" >> .env
+    echo "T212_API_KEY=xxx" > .env
+    echo "AWS_ACCESS_KEY_ID=xxx" >> .env # or use aws configure
+    echo "AWS_SECRET_ACCESS_KEY=xxx" >> .env # or use aws configure
+    echo "AWS_REGION=xxx" >> .env # or use aws configure
+    echo "BUCKET_NAME=xxx" >> .env
 ```
 
 ```bash
-uv run main.py
+    uv run main.py
 ```
 
 # TODO
