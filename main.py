@@ -1,6 +1,7 @@
 import os
 import time
 from datetime import date, datetime
+from io import BytesIO
 from typing import Any
 
 import boto3
@@ -68,7 +69,7 @@ def main():
     t212_client = t212_utils.ApiClient(api_key=os.getenv('T212_API_KEY'))
     seznam_client = email_utils.TLSClient(
         username=os.getenv('EMAIL'),
-        password=os.getenv('PASSWORD'),
+        password=os.getenv('EMAIL_PASSWORD'),
         host='smtp.seznam.cz',
     )
     s3_client = boto3.client('s3')
@@ -120,25 +121,34 @@ def main():
     t212_df_encoded: bytes = response.content
     filename: str = f'{input_dt_str}.csv'
     s3_client.upload_fileobj(
-        Fileobj=t212_df_encoded, Bucket=bucket_name, Key=f't212/{filename}'
+        Fileobj=BytesIO(t212_df_encoded), Bucket=bucket_name, Key=f't212/{filename}'
     )
 
     t212_df: pd.DataFrame = csv_utils.decode_to_df(t212_df_encoded)
-    t212_df.to_csv(f't212_{filename}', index=False)
 
     digrin_df: pd.DataFrame = transform(t212_df)
-    digrin_df.to_csv(filename, index=False)
 
     digrin_df_encoded: bytes = csv_utils.encode_df(digrin_df)
     s3_client.upload_fileobj(
-        Fileobj=digrin_df_encoded, Bucket=bucket_name, Key=f'digrin/{filename}'
+        Fileobj=BytesIO(digrin_df_encoded), Bucket=bucket_name, Key=f'digrin/{filename}'
+    )
+    s3_url = s3_client.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': bucket_name, 'Key': f'digrin/{filename}'},
+        ExpiresIn=300,  # 5min
     )
     seznam_client.send_email(
         receiver=os.getenv('EMAIL'),
         subject='T212 to Digrin',
-        body='<html><body><p><br>Your Report is ready<br></p></body></html>',
-        attachment=digrin_df_encoded,
-        filename=filename,
+        body=f'''
+            <html>
+                <body>
+                    <p>
+                        <br>Your Report is <a href="{s3_url}">ready</a>.<br>
+                    </p>
+                </body>
+            </html>
+        ''',
     )
 
 

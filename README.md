@@ -8,8 +8,9 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 5. Download raw T212 CSV report from ad3.
 6. Store downloaded T212 CSV from ad5 in AWS S3.
 7. Decode, transform into Digrin, encode.
-8. Store Digrin CSV from ad6 locally for upload
-9. Store Digrin CSV from ad6 in AWS S3.
+8. Store Digrin CSV from ad6 in AWS S3.
+9. Create a presigned URL, valid for 5 min
+10. Send email with URL from ad9.
 
 ## Setup
 
