@@ -132,7 +132,7 @@ def main():
     s3_client.upload_fileobj(
         Fileobj=BytesIO(digrin_df_encoded), Bucket=bucket_name, Key=f'digrin/{filename}'
     )
-    s3_url = s3_client.generate_presigned_url(
+    s3_url: str = s3_client.generate_presigned_url(
         'get_object',
         Params={'Bucket': bucket_name, 'Key': f'digrin/{filename}'},
         ExpiresIn=300,  # 5min
