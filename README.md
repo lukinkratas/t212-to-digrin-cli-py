@@ -34,7 +34,7 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 - [ ] investigate option of asyncio + measure perf improvement
 
-- [ ] manage secrets via gcp secrets
+- [ ] manage secrets via cloud
 
 - [ ] add type hints for created variables in main()
 
