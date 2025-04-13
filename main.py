@@ -132,7 +132,7 @@ def main():
     s3_client.upload_fileobj(
         Fileobj=BytesIO(digrin_df_encoded), Bucket=bucket_name, Key=f'digrin/{filename}'
     )
-    s3_url: str = s3_client.generate_presigned_url(
+    digrin_csv_url: str = s3_client.generate_presigned_url(
         'get_object',
         Params={'Bucket': bucket_name, 'Key': f'digrin/{filename}'},
         ExpiresIn=300,  # 5min
@@ -144,7 +144,7 @@ def main():
             <html>
                 <body>
                     <p>
-                        <br>Your Report is <a href="{s3_url}">ready</a>.<br>
+                        <br>Your Report is <a href="{digrin_csv_url}">ready</a>.<br>
                     </p>
                 </body>
             </html>
