@@ -50,7 +50,7 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 - [x] add send mail instead of storing locally
 
-- [ ] send aws s3 temporary link and not email attachment
+- [x] send aws s3 temporary link and not email attachment
 
 - [ ] add gmail option
 
