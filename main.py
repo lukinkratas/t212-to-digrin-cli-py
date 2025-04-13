@@ -9,7 +9,7 @@ import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
-from custom_utils import csv_utils, datetime_utils, decorators, email_utils, t212_utils, aws_utils
+from custom_utils import csv_utils, datetime_utils, decorators, email_utils, t212_utils
 
 
 def get_input_dt() -> str:
@@ -119,8 +119,8 @@ def main():
 
     t212_df_encoded: bytes = response.content
     filename: str = f'{input_dt_str}.csv'
-    aws_utils.s3_put_object(
-        Body=t212_df_encoded, Bucket=bucket_name, Key=f't212/{filename}'
+    s3_client.upload_fileobj(
+        Fileobj=t212_df_encoded, Bucket=bucket_name, Key=f't212/{filename}'
     )
 
     t212_df: pd.DataFrame = csv_utils.decode_to_df(t212_df_encoded)
@@ -130,8 +130,8 @@ def main():
     digrin_df.to_csv(filename, index=False)
 
     digrin_df_encoded: bytes = csv_utils.encode_df(digrin_df)
-    aws_utils.s3_put_object(
-        Body=digrin_df_encoded, Bucket=bucket_name, Key=f'digrin/{filename}'
+    s3_client.upload_fileobj(
+        Fileobj=digrin_df_encoded, Bucket=bucket_name, Key=f'digrin/{filename}'
     )
     seznam_client.send_email(
         receiver=os.getenv('EMAIL'),
