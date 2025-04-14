@@ -4,9 +4,9 @@ from typing import Any
 import requests
 
 
-class ApiClient(object):
-    def __init__(self, api_key: str):
-        self.api_key = api_key
+class APIClient(object):
+    def __init__(self, key: str):
+        self.key = key
 
     def create_report(
         self, from_dt: str | datetime.datetime, to_dt: str | datetime.datetime
@@ -42,7 +42,7 @@ class ApiClient(object):
 
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': self.api_key,
+            'Authorization': self.key,
         }
 
         response = requests.post(url, json=payload, headers=headers)
@@ -62,7 +62,7 @@ class ApiClient(object):
         """
         url = 'https://live.trading212.com/api/v0/history/exports'
 
-        headers = {'Authorization': self.api_key}
+        headers = {'Authorization': self.key}
 
         response = requests.get(url, headers=headers)
 

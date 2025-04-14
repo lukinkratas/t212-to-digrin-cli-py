@@ -10,7 +10,8 @@ import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
-from custom_utils import csv_utils, datetime_utils, decorators, email_utils, t212_utils
+import t212
+from custom_utils import csv_utils, datetime_utils, decorators, email_utils
 
 
 def get_input_dt() -> str:
@@ -66,7 +67,7 @@ def main():
     load_dotenv(override=True)
 
     bucket_name: str = os.getenv('BUCKET_NAME')
-    t212_client = t212_utils.ApiClient(api_key=os.getenv('T212_API_KEY'))
+    t212_client = t212.APIClient(key=os.getenv('T212_API_KEY'))
     seznam_client = email_utils.TLSClient(
         username=os.getenv('EMAIL'),
         password=os.getenv('EMAIL_PASSWORD'),
@@ -125,7 +126,6 @@ def main():
     )
 
     t212_df: pd.DataFrame = csv_utils.decode_to_df(t212_df_encoded)
-
     digrin_df: pd.DataFrame = transform(t212_df)
 
     digrin_df_encoded: bytes = csv_utils.encode_df(digrin_df)
