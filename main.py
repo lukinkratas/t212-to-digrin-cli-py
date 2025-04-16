@@ -6,12 +6,11 @@ from typing import Any
 
 import boto3
 import pandas as pd
-import requests
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
 import t212
-from custom_utils import csv_utils, datetime_utils, decorators, email_utils
+from custom_utils import dataframe_utils, datetime_utils, email_utils
 
 
 def get_input_dt() -> str:
@@ -29,7 +28,6 @@ def get_input_dt() -> str:
     return input_dt_str
 
 
-@decorators.track_args
 def transform(report_df: pd.DataFrame) -> pd.DataFrame:
     # Filter only buys and sells
     allowed_actions: list[str] = ['Market buy', 'Market sell']
@@ -105,30 +103,24 @@ def main():
             continue
 
         # filter report by report_id, start from the last report
-        report: dict = next(
+        report_dict: dict[str, Any] = next(
             filter(lambda report: report.get('reportId') == report_id, reports[::-1])
         )
 
-        if report.get('status') == 'Finished':
-            download_link: str = report.get('downloadLink')
+        if report_dict.get('status') == 'Finished':
+            report = t212.Report(**report_dict)
             break
 
-    response: requests.Response = requests.get(download_link)
-
-    if response.status_code != 200:
-        print(f'{response.status_code=}')
-        return
-
-    t212_df_encoded: bytes = response.content
+    t212_df_encoded: bytes = report.download()
     filename: str = f'{input_dt_str}.csv'
     s3_client.upload_fileobj(
         Fileobj=BytesIO(t212_df_encoded), Bucket=bucket_name, Key=f't212/{filename}'
     )
 
-    t212_df: pd.DataFrame = csv_utils.decode_to_df(t212_df_encoded)
+    t212_df: pd.DataFrame = dataframe_utils.decode_to_df(t212_df_encoded)
     digrin_df: pd.DataFrame = transform(t212_df)
 
-    digrin_df_encoded: bytes = csv_utils.encode_df(digrin_df)
+    digrin_df_encoded: bytes = dataframe_utils.encode_df(digrin_df)
     s3_client.upload_fileobj(
         Fileobj=BytesIO(digrin_df_encoded), Bucket=bucket_name, Key=f'digrin/{filename}'
     )

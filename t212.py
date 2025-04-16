@@ -3,13 +3,22 @@ from typing import Any
 
 import requests
 
+from custom_utils import decorators
+
 
 class APIClient(object):
     def __init__(self, key: str):
         self.key = key
 
+    @decorators.track_args
     def create_report(
-        self, from_dt: str | datetime.datetime, to_dt: str | datetime.datetime
+        self,
+        from_dt: str | datetime.datetime,
+        to_dt: str | datetime.datetime,
+        include_dividends: bool = True,
+        include_interest: bool = True,
+        include_orders: bool = True,
+        include_transactions: bool = True,
     ) -> int | None:
         """Spawns T212 csv export process.
 
@@ -31,10 +40,10 @@ class APIClient(object):
 
         payload = {
             'dataIncluded': {
-                'includeDividends': True,
-                'includeInterest': True,
-                'includeOrders': True,
-                'includeTransactions': True,
+                'includeDividends': include_dividends,
+                'includeInterest': include_interest,
+                'includeOrders': include_orders,
+                'includeTransactions': include_transactions,
             },
             'timeFrom': from_dt,
             'timeTo': to_dt,
@@ -53,6 +62,7 @@ class APIClient(object):
 
         return response.json().get('reportId')
 
+    @decorators.track_args
     def list_reports(self) -> list[dict[str, Any]] | None:
         """Fetches list of reports.
 
@@ -71,3 +81,31 @@ class APIClient(object):
             return None
 
         return response.json()
+
+
+class Report(object):
+    def __init__(
+        self,
+        reportId: int,  # noqa: N803
+        timeFrom: str,  # noqa: N803
+        timeTo: str,  # noqa: N803
+        dataIncluded: dict[str, bool],  # noqa: N803
+        status: str,
+        downloadLink: str,  # noqa: N803
+    ):
+        self.report_id = reportId
+        self.time_from = timeFrom
+        self.time_to = timeTo
+        self.data_included = dataIncluded
+        self.status = status
+        self.download_link = downloadLink
+
+    @decorators.track_args
+    def download(self) -> bytes | None:
+        response = requests.get(self.download_link)
+
+        if response.status_code != 200:
+            print(f'{response.status_code=}')
+            return None
+
+        return response.content

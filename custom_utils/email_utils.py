@@ -14,7 +14,7 @@ def get_plain_text(html_text: str) -> str:
     return soup.text
 
 
-def encode_attachment(file_or_path: str | bytes, filename: str = None) -> bytes:
+def encode_attachment(file_or_path: str | bytes, filename: str = '') -> bytes:
     if isinstance(file_or_path, str):
         with open(file_or_path, 'rb') as attachment_file:
             attachment = attachment_file.read()
@@ -99,27 +99,3 @@ class TLSClient(object):
             attachment=attachment,
             filename=filename,
         )
-
-
-def main() -> None:
-    from dotenv import load_dotenv
-
-    load_dotenv(override=True)
-
-    seznam_client = TLSClient(
-        username=os.getenv('EMAIL'),
-        password=os.getenv('PASSWORD'),
-        host='smtp.seznam.cz',
-    )
-
-    seznam_client.send_email(
-        receiver=os.getenv('EMAIL'),
-        subject='Test',
-        body='<html><body><p><br>This is a test message.<br></p></body></html>',
-        attachment=b'xxx',
-        filename='xxx.txt',
-    )
-
-
-if __name__ == '__main__':
-    main()
