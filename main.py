@@ -31,14 +31,14 @@ def get_input_dt() -> str:
 def transform(report_df: pd.DataFrame) -> pd.DataFrame:
     # Filter only buys and sells
     allowed_actions: list[str] = ['Market buy', 'Market sell']
-    report_df: pd.DataFrame = report_df[report_df['Action'].isin(allowed_actions)]
+    report_df = report_df[report_df['Action'].isin(allowed_actions)]
 
     # Filter out blacklisted tickers
     ticker_blacklist: list[str] = [
         'VNTRF',  # due to stock split
         'BRK.A',  # not available in digrin
     ]
-    report_df: pd.DataFrame = report_df[~report_df['Ticker'].isin(ticker_blacklist)]
+    report_df = report_df[~report_df['Ticker'].isin(ticker_blacklist)]
 
     # Apply the mapping to the ticker column
     ticker_map: dict[str, str] = {
@@ -55,7 +55,7 @@ def transform(report_df: pd.DataFrame) -> pd.DataFrame:
         'IUHC': 'IUHC.L',
         'NDIA': 'NDIA.L',
     }
-    report_df['Ticker']: pd.Series = report_df['Ticker'].replace(ticker_map)
+    report_df['Ticker'] = report_df['Ticker'].replace(ticker_map)
 
     # convert dtypes
     return report_df.convert_dtypes()

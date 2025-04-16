@@ -32,6 +32,8 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 # TODO
 
+- [ ] investigate option of asyncio + measure perf improvement
+
 - [ ] manage secrets via cloud
 
 - [ ] add type hints for created variables in main()
@@ -42,7 +44,7 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 - [ ] add tests
 
-- [ ] schedule via Airflow / Prefect / Github Actions / Serverless on cloud
+- [ ] schedule via Airflow / Github Actions
 
 - [x] add Ci/CD via github actions
 
@@ -50,8 +52,6 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 - [x] send aws s3 temporary link and not email attachment
 
-- [x] investigate option of asyncio + measure perf improvement
-
-- [x] report class ?
-
 - [ ] add gmail option
+
+- [ ] report class ?
