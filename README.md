@@ -32,8 +32,6 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 # TODO
 
-- [ ] investigate option of asyncio + measure perf improvement
-
 - [ ] manage secrets via cloud
 
 - [ ] add type hints for created variables in main()
@@ -52,6 +50,8 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 - [x] send aws s3 temporary link and not email attachment
 
-- [ ] add gmail option
+- [x] investigate option of asyncio + measure perf improvement
 
-- [ ] report class ?
+- [x] report class
+
+- [ ] add gmail option
