@@ -12,13 +12,22 @@ def get_username():
 def track_args(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        print(f'{datetime.now()} {get_username()} called {func.__name__}.')
-        print(f'  {args=}')
+        # check if first argument is class instance (self)
+        first_arg = args[0]
+        if hasattr(first_arg, func.__name__):
+            func_name = f'{first_arg.__class__.__name__}.{func.__name__}'
+            copy_args = args[1:]
+        else:
+            func_name = func.__name__
+            copy_args = args
+
+        print(f'{datetime.now()} {get_username()} called {func_name}().')
+        print(f'  {copy_args=}')
         print(f'  {kwargs=}')
 
         result = func(*args, **kwargs)
 
-        print(f'{func.__name__} finished.\n  {result=}')
+        print(f'{func_name} finished.\n  {result=}\n')
 
         return result
 

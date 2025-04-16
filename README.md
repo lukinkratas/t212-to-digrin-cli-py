@@ -42,7 +42,7 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 - [ ] add tests
 
-- [ ] schedule via Airflow / Github Actions
+- [ ] schedule via Airflow / Prefect / Github Actions / Serverless on cloud
 
 - [x] add Ci/CD via github actions
 
@@ -50,7 +50,7 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 - [x] send aws s3 temporary link and not email attachment
 
-- [x] investigate option of asyncio + measure perf improvement
+- [x] investigate option of asyncio + measure perf improvement -> no significant improvement
 
 - [x] report class
 
