@@ -99,3 +99,17 @@ class TLSClient(object):
             attachment=attachment,
             filename=filename,
         )
+
+
+if __name__ == '__main__':
+    # Example usage
+    email_client = TLSClient(
+        username=os.getenv('EMAIL'),
+        password=os.getenv('EMAIL_PASSWORD'),
+        host='smtp.seznam.cz',
+    )
+    email_client.send_email(
+        receiver=os.getenv('EMAIL'),
+        subject='Test',
+        body='<html><body><p>This is a test message</p></body></html>',
+    )
