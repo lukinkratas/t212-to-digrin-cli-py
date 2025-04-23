@@ -7,6 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 
 
 def get_plain_text(html_text: str) -> str:
@@ -14,7 +15,7 @@ def get_plain_text(html_text: str) -> str:
     return soup.text
 
 
-def encode_attachment(file_or_path: str | bytes, filename: str = '') -> bytes:
+def encode_attachment(file_or_path: str | bytes, filename: str = '') -> MIMEBase:
     if isinstance(file_or_path, str):
         with open(file_or_path, 'rb') as attachment_file:
             attachment = attachment_file.read()
@@ -101,15 +102,24 @@ class TLSClient(object):
         )
 
 
-if __name__ == '__main__':
+def main() -> None:
+    load_dotenv(override=True)
+
     # Example usage
     email_client = TLSClient(
-        username=os.getenv('EMAIL'),
-        password=os.getenv('EMAIL_PASSWORD'),
+        username=os.environ['EMAIL'],
+        password=os.environ['EMAIL_PASSWORD'],
         host='smtp.seznam.cz',
     )
+
     email_client.send_email(
-        receiver=os.getenv('EMAIL'),
+        receiver=os.environ['EMAIL'],
         subject='Test',
         body='<html><body><p>This is a test message</p></body></html>',
+        attachment=b'This is a text',
+        filename='text.txt',
     )
+
+
+if __name__ == '__main__':
+    main()

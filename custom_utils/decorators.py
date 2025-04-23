@@ -1,17 +1,19 @@
 import getpass
 import statistics
+from collections.abc import Callable
 from datetime import datetime, timedelta
 from functools import wraps
 from time import perf_counter
+from typing import Any
 
 
-def get_username():
+def get_username() -> str:
     return getpass.getuser()
 
 
-def track_args(func):
+def track_args(func: Callable[..., Any]) -> Callable[..., Any]:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         # check if first argument is class instance (self)
         first_arg = args[0]
         if hasattr(first_arg, func.__name__):
@@ -34,10 +36,10 @@ def track_args(func):
     return wrapper
 
 
-def track_time_performance(n: int = 1):
-    def decorator(func):
+def track_time_performance(n: int = 1) -> Callable[..., Any]:
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             run_times = []
 
             print(f'{func.__name__} running {n} time(s) started.')

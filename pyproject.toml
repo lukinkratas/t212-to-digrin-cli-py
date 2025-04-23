@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "boto3>=1.37.18",
     "bs4>=0.0.2",
+    "mypy>=1.15.0",
     "pandas>=2.2.3",
     "python-dateutil>=2.9.0.post0",
     "python-dotenv>=1.0.1",
@@ -24,8 +25,19 @@ extend-select = ["E501", "N", "R", "I", "C901", "PD", "NPY"]
 quote-style = "single"
 indent-style = "space"
 
+[tool.mypy]
+strict = true
+explicit_package_bases = true
+check_untyped_defs = true
+disable_error_code = ["no-any-return"]
+
 [dependency-groups]
 dev = [
+    "boto3-stubs>=1.38.0",
+    "pandas-stubs>=2.2.3.250308",
     "pytest>=8.3.5",
     "ruff>=0.11.4",
+    "types-beautifulsoup4>=4.12.0.20250204",
+    "types-python-dateutil>=2.9.0.20241206",
+    "types-requests>=2.32.0.20250328",
 ]

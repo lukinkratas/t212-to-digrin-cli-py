@@ -61,14 +61,14 @@ def transform(report_df: pd.DataFrame) -> pd.DataFrame:
     return report_df.convert_dtypes()
 
 
-def main():
+def main() -> None:
     load_dotenv(override=True)
 
-    bucket_name: str = os.getenv('BUCKET_NAME')
-    t212_client = t212.APIClient(key=os.getenv('T212_API_KEY'))
+    bucket_name: str = os.environ['BUCKET_NAME']
+    t212_client = t212.APIClient(key=os.environ['T212_API_KEY'])
     seznam_client = email_utils.TLSClient(
-        username=os.getenv('EMAIL'),
-        password=os.getenv('EMAIL_PASSWORD'),
+        username=os.environ['EMAIL'],
+        password=os.environ['EMAIL_PASSWORD'],
         host='smtp.seznam.cz',
     )
     s3_client = boto3.client('s3')
@@ -130,7 +130,7 @@ def main():
         ExpiresIn=300,  # 5min
     )
     seznam_client.send_email(
-        receiver=os.getenv('EMAIL'),
+        receiver=os.environ['EMAIL'],
         subject='T212 to Digrin',
         body=f'''
             <html>
