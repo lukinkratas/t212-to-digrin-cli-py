@@ -10,24 +10,29 @@ repos:
 
   - repo: local
     hooks:
-
-    - id: run unit tests
-      name: run unit tests
-      language: system
-      entry: uv run --dev pytest
-      files: ./
-      types: [python]
-
-    - id: ruff format
-      name: ruff format
-      language: system
-      entry: uv run --dev ruff format
-      files: ./
-      types: [python]
-
-    - id: ruff lint
+    - id: ruff-lint
       name: ruff lint
       language: system
       entry: uv run --dev ruff check --fix
-      files: ./
-      types: [python]
+      pass_filenames: false
+    - id: ruff-format
+      name: ruff format
+      language: system
+      entry: uv run --dev ruff format
+      pass_filenames: false
+    - id: unit-tests
+      name: unit tests
+      language: system
+      entry: uv run --dev pytest
+      pass_filenames: false
+
+  # - repo: https://github.com/astral-sh/ruff-pre-commit
+  #   rev: v0.11.6
+  #   hooks:
+  #     - id: ruff
+  #       name: ruff lint
+  #       args: [ --fix ]
+  #       types: [ python ]
+  #     - id: ruff-format
+  #       name: ruff format
+  #       types: [ python ]
