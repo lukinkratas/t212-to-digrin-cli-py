@@ -14,22 +14,23 @@ repos:
       name: ruff format
       language: system
       entry: uv run --dev ruff format
-      pass_filenames: false
+      types: [python]
 
     - id: ruff-lint
       name: ruff lint
       language: system
       entry: uv run --dev ruff check --fix
-      pass_filenames: false
+      types: [python]
 
     - id: mypy-type-check
       name: mypy type check
       language: system
-      entry: uv run --dev mypy .
-      pass_filenames: false
+      entry: uv run --dev mypy
+      types: [python]
 
     - id: pytest-run-unit-tests
       name: pytest run unit tests
       language: system
       entry: uv run --dev pytest
       pass_filenames: false
+      always_run: true
