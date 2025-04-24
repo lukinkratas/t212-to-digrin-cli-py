@@ -20,6 +20,8 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
     echo "AWS_SECRET_ACCESS_KEY=xxx" >> .env # or use aws configure
     echo "AWS_REGION=xxx" >> .env # or use aws configure
     echo "BUCKET_NAME=xxx" >> .env
+    echo "EMAIL_PASSWORD=xxx" >> .env
+    echo "EMAIL=xxx" >> .env
 ```
 
 ```bash
