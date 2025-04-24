@@ -112,6 +112,7 @@ def main() -> None:
             break
 
         decorators.logger.info('Report not yet ready.')
+        time.sleep(10)
 
     t212_df_encoded: bytes = report.download()
     filename: str = f'{input_dt_str}.csv'
