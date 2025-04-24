@@ -10,7 +10,7 @@ from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
 
 import t212
-from custom_utils import dataframe_utils, datetime_utils, email_utils
+from custom_utils import dataframe_utils, datetime_utils, decorators, email_utils
 
 
 def get_input_dt() -> str:
@@ -110,6 +110,8 @@ def main() -> None:
         if report_dict.get('status') == 'Finished':
             report = t212.Report(**report_dict)
             break
+
+        decorators.logger.info('Report not yet ready.')
 
     t212_df_encoded: bytes = report.download()
     filename: str = f'{input_dt_str}.csv'

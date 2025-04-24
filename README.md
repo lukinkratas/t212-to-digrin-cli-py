@@ -32,13 +32,13 @@ Python CLI tool for fetching T212 reports via API call and transforming them to 
 
 # TODO
 
-- [ ] manage secrets via cloud
-
-- [ ] add logging
-
 - [ ] schedule via Airflow / Prefect / Github Actions / Serverless on cloud
 
+- [ ] manage secrets via cloud
+
 - [ ] archive reports in parquet ?
+
+- [x] add logging
 
 - [x] add type hints for created variables in main()
 

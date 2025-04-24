@@ -57,7 +57,7 @@ class APIClient(object):
         response = requests.post(url, json=payload, headers=headers)
 
         if response.status_code != 200:
-            print(f'{response.status_code=}')
+            decorators.logger.warning(f'{response.status_code=}')
             return None
 
         return response.json().get('reportId')
@@ -77,7 +77,7 @@ class APIClient(object):
         response = requests.get(url, headers=headers)
 
         if response.status_code != 200:
-            print(f'{response.status_code=}')
+            decorators.logger.warning(f'{response.status_code=}')
             return None
 
         return response.json()
@@ -105,7 +105,7 @@ class Report(object):
         response = requests.get(self.download_link)
 
         if response.status_code != 200:
-            print(f'{response.status_code=}')
+            decorators.logger.warning(f'{response.status_code=}')
             return None
 
         return response.content
