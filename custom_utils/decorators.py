@@ -9,22 +9,12 @@ from typing import Any
 
 
 def init_logger() -> logging.Logger:
-    # create logger
-    logger = logging.getLogger('t212_to_digrin')
-    logger.setLevel(logging.DEBUG)
+    logging.basicConfig(
+        format='%(asctime)s / %(name)s / %(levelname)-8s %(message)s',
+        level=logging.DEBUG,
+    )
 
-    # create handler
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.DEBUG)
-
-    # add formatter to ch
-    formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
-    stream_handler.setFormatter(formatter)
-
-    # add handler to logger
-    logger.addHandler(stream_handler)
-
-    return logger
+    return logging.getLogger('t212_to_digrin')
 
 
 logger: logging.Logger = init_logger()
@@ -48,10 +38,10 @@ def get_func_name_and_args(
 def track_args(func: Callable[..., Any]) -> Callable[..., Any]:
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
-        func_name, copy_args = get_func_name_and_args(func, args)
+        func_name, args_copy = get_func_name_and_args(func, args)
 
         logger.debug(
-            f'{get_username()} called {func_name}().\n  args={copy_args}\n  {kwargs=}'
+            f'{get_username()} called {func_name}().\n  args={args_copy}\n  {kwargs=}'
         )
         result = func(*args, **kwargs)
         logger.debug(f'{func_name} finished.\n  {result=}\n')
