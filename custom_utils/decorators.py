@@ -10,7 +10,7 @@ from typing import Any
 
 def init_logger() -> logging.Logger:
     logging.basicConfig(
-        format='%(asctime)s / %(name)s / %(levelname)-8s %(message)s',
+        format='%(asctime)s | %(name)s | %(levelname)-8s | %(message)s',
         level=logging.DEBUG,
     )
 
